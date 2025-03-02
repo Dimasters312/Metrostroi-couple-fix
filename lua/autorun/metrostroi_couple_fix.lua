@@ -26,7 +26,7 @@ if SERVER then
 						0,
 						0
 					)) then
-						sound.Play("subway_trains/bogey/couple.mp3",(self:GetPos()+ent:GetPos())/2,70,100,1)
+						sound.Play(Metrostroi.CustomCouplingSound or "subway_trains/bogey/couple.mp3",(self:GetPos()+ent:GetPos())/2,70,100,1)
 						self:OnCouple(ent)
 						ent:OnCouple(self)
 					end
