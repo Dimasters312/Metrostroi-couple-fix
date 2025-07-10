@@ -31,6 +31,35 @@ if SERVER then
 						ent:OnCouple(self)
 					end
 				end
+				function couple:Use(ply)
+					local train = self:GetNW2Entity("TrainEntity")
+					local isfront = self:GetNW2Bool("IsForwardCoupler")
+					net.Start("metrostroi-coupler-menu")
+						net.WriteEntity(self)
+						net.WriteBool(not self.CPPICanUse or self:CPPICanUse(ply))
+						net.WriteBool(self.CoupledEnt ~= nil)
+						if IsValid(train) then
+							if isfront and train.FrontBrakeLineIsolation and train.FrontTrainLineIsolation then
+								net.WriteBool(true)
+								net.WriteBool(train.FrontBrakeLineIsolation.Value>0 and train.FrontTrainLineIsolation.Value>0)
+								net.WriteBool(train.SubwayTrain.NoFrontEKK)
+							elseif not isfront and train.RearBrakeLineIsolation and train.RearTrainLineIsolation then
+								net.WriteBool(true)
+								net.WriteBool(train.RearBrakeLineIsolation.Value>0 and train.RearTrainLineIsolation.Value>0)
+								net.WriteBool(self.CoupleType=="722")
+							else
+								net.WriteBool(false)
+								net.WriteBool(false)
+								net.WriteBool(self.CoupleType=="722")
+							end
+						else
+							net.WriteBool(false)
+							net.WriteBool(false)
+							net.WriteBool(self.CoupleType=="722")
+						end
+						net.WriteBool(self.EKKDisconnected)
+					net.Send(ply)
+				end
 				scripted_ents.Register(couple,"gmod_train_couple")
 			end
 		end)
